@@ -4,44 +4,18 @@
     <meta charset="UTF-8">
     <title>Telegram WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
 </head>
 <body>
-    <div id="picker" style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%"></div>
+    <button id="donateButton">Donate with Telegram Stars</button>
     <script type="text/javascript">
-        // Инициализация цветового_picker
-        const colorPicker = new iro.ColorPicker('#picker', {
-            borderColor: "#ffffff",
-            borderWidth: 1,
-            width: Math.round(document.documentElement.clientWidth / 2),
-        });
-
-        colorPicker.on('color:change', function (color) {
-            document.body.style.background = color.hexString;
-        });
-
         Telegram.WebApp.ready();
 
-        // Обработчик нажатия на кнопку
-        Telegram.WebApp.MainButton.setText('Choose Color').show().onClick(function () {
-            const data = JSON.stringify({hex: colorPicker.color.hexString, rgb: colorPicker.color.rgb});
-
-            // Показать всплывающее окно
-            Telegram.WebApp.showPopup({
-                title: 'Confirm Your Choice',
-                message: 'Do you want to send this color data?',
-                buttons: [
-                    {type: 'ok', text: 'Send'},
-                    {type: 'cancel', text: 'Cancel'}
-                ]
-            });
-
-            // Отправить данные в Telegram после подтверждения
-            Telegram.WebApp.onEvent('popupClosed', function(event) {
-                if (event.button === 'ok') {
-                    Telegram.WebApp.sendData(data);
-                }
-            });
+        document.getElementById('donateButton').addEventListener('click', () => {
+            // Создайте инвойс с помощью метода sendInvoice
+            Telegram.WebApp.sendData(JSON.stringify({
+                action: 'donate',
+                amount: 1000,  // пример суммы в самых маленьких единицах валюты, например, 1000 = 10.00 XTR
+            }));
         });
     </script>
 </body>
