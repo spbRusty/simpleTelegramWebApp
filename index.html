@@ -7,15 +7,36 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const webApp = window.Telegram.WebApp;
-            const chatId = webApp.initDataUnsafe.user.id;
+            const tg = window.Telegram.WebApp;
+            const chatId = tg.initDataUnsafe.user.id;  // Получаем chat_id пользователя
 
             document.getElementById('donate-button').addEventListener('click', function() {
-                // Отправляем chat_id боту через callback запрос
-                webApp.sendData(JSON.stringify({chat_id: chatId}));
+                const botToken = "7416830543:AAHgWiUb-J-7J940EOnt7HokuxiDuYELPmM";
+                const title = "Донат";
+                const description = "Поддержите проект";
+                const payload = "donation_payload";
+                const currency = "XTR";  // Звёзды Telegram
+                const prices = JSON.stringify([{ "label": "Donation", "amount": 100000 }]);
+
+                // Формируем URL для API Telegram
+                const url = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${prices}`;
+
+                // Отправляем запрос на API Telegram
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            alert("Инвойс отправлен!");
+                        } else {
+                            alert("Ошибка при отправке инвойса: " + data.description);
+                        }
+                    })
+                    .catch(error => {
+                        alert("Ошибка при отправке запроса: " + error);
+                    });
             });
 
-            webApp.ready();
+            tg.ready();
         });
     </script>
 </head>
