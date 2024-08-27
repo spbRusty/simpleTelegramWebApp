@@ -16,10 +16,6 @@
             font-size: 18px;
             cursor: pointer;
         }
-        #status {
-            margin-top: 20px;
-            color: red;
-        }
     </style>
 </head>
 <body>
@@ -27,21 +23,13 @@
     <p>Нажмите кнопку ниже, чтобы сделать донат в 1000 звёзд.</p>
     <button id="donate-button">Сделать донат</button>
 
-    <div id="status"></div> <!-- Блок для вывода статуса -->
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const tg = window.Telegram.WebApp;
-            const statusDiv = document.getElementById('status');
-
-            // Отображаем данные для отладки
-            statusDiv.textContent = JSON.stringify(tg.initDataUnsafe);
-
-            // Попытка получить chat_id
-            const chatId = tg.initDataUnsafe?.user?.id || "53628918"; // Подставляем chat_id, если не удалось получить
+            const chatId = tg.initDataUnsafe?.user?.id;
 
             if (!chatId) {
-                statusDiv.textContent = "Ошибка: не удалось получить chat_id.";
+                alert("Ошибка: не удалось получить chat_id.");
                 return;
             }
 
@@ -54,9 +42,9 @@
                 const price = 100000; // Сумма в наименьших единицах
 
                 // Формируем URL запроса
-                //const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
-                const requestUrl = `https://api.telegram.org/bot${botToken}/createInvoiceLink?&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
-                // Перенаправляем на URL для отправки инвойса
+                const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
+
+                // Открываем URL в новом окне для отправки инвойса
                 window.location.href = requestUrl;
             });
 
