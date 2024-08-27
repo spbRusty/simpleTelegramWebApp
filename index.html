@@ -43,23 +43,37 @@
                 const currency = "XTR";  // Звёзды Telegram
                 const prices = JSON.stringify([{ "label": "Donation", "amount": 100000 }]);
 
-                // Формируем URL для API Telegram
-                const url = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(prices)}`;
+                // Формируем параметры для запроса
+                const params = new URLSearchParams({
+                    chat_id: chatId,
+                    title: title,
+                    description: description,
+                    payload: payload,
+                    provider_token: '',  // Оставляем пустым для Telegram Stars
+                    currency: currency,
+                    prices: prices,
+                });
 
                 // Отправляем запрос на API Telegram
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.ok) {
-                            statusDiv.textContent = "Инвойс отправлен успешно!";
-                            statusDiv.style.color = "green";
-                        } else {
-                            statusDiv.textContent = "Ошибка: " + data.description;
-                        }
-                    })
-                    .catch(error => {
-                        statusDiv.textContent = "Ошибка запроса: " + error;
-                    });
+                fetch(`https://api.telegram.org/bot${botToken}/sendInvoice`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: params.toString()
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        statusDiv.textContent = "Инвойс отправлен успешно!";
+                        statusDiv.style.color = "green";
+                    } else {
+                        statusDiv.textContent = "Ошибка: " + data.description;
+                    }
+                })
+                .catch(error => {
+                    statusDiv.textContent = "Ошибка запроса: " + error;
+                });
             });
 
             tg.ready();
