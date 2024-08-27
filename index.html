@@ -55,7 +55,7 @@
 
                 // Формируем URL запроса
                 //const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
-                const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
+                const requestUrl = `https://api.telegram.org/bot${botToken}/createInvoiceLink?&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
                 // Перенаправляем на URL для отправки инвойса
                 window.location.href = requestUrl;
             });
