@@ -2,21 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Telegram WebApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-    <button id="donateButton">Donate with Telegram Stars</button>
-    <script type="text/javascript">
-        Telegram.WebApp.ready();
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const webApp = window.Telegram.WebApp;
+            const initData = webApp.initDataUnsafe;
 
-        document.getElementById('donateButton').addEventListener('click', () => {
-            // Создайте инвойс с помощью метода sendInvoice
-            Telegram.WebApp.sendData(JSON.stringify({
-                action: 'donate',
-                amount: 1000,  // пример суммы в самых маленьких единицах валюты, например, 1000 = 10.00 XTR
-            }));
+            // Получаем chat_id
+            const chatId = initData.user.id;
+
+            // Формируем ссылку для оплаты
+            const donateUrl = `https://api.telegram.org/bot${initData.query_id}/sendInvoice?chat_id=${chatId}&title=donat&description=дайте_много_денег&payload=64&currency=XTR&prices=[{"label":"Donation","amount":10000}]`;
+
+            // Устанавливаем ссылку в кнопку
+            document.getElementById('donate-button').setAttribute('href', donateUrl);
+
+            // Информируем Telegram, что веб-приложение готово
+            webApp.ready();
         });
     </script>
+</head>
+<body>
+    <h1>Поддержите нас!</h1>
+    <p>Нажмите кнопку ниже, чтобы сделать донат в 1000 звёзд.</p>
+    <a id="donate-button" href="#" target="_blank">
+        <button>Сделать донат</button>
+    </a>
 </body>
 </html>
