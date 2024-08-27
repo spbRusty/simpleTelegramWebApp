@@ -2,47 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>python-telegram-bot Example WebApp</title>
+    <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        #picker {
+            width: 100%;
+            height: 300px;
+        }
+        .donate-button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<script type="text/javascript">
-    const colorPicker = new iro.ColorPicker('#picker', {
-        borderColor: "#ffffff",
-        borderWidth: 1,
-        width: Math.round(document.documentElement.clientWidth / 2),
-    });
-    
-    colorPicker.on('color:change', function (color) {
-        document.body.style.background = color.hexString;
-    });
+<body>
+    <h1>Choose a Color</h1>
+    <div id="picker"></div>
+    <button class="donate-button" id="donateButton">Donate with Stars</button>
 
-    const sendDataToTelegram = function() {
-        const data = JSON.stringify({hex: colorPicker.color.hexString, rgb: colorPicker.color.rgb});
-        Telegram.WebApp.sendData(data);
-    };
+    <script type="text/javascript">
+        const colorPicker = new iro.ColorPicker('#picker', {
+            borderColor: "#ffffff",
+            borderWidth: 1,
+            width: Math.round(document.documentElement.clientWidth / 2),
+        });
 
-    Telegram.WebApp.ready();
+        colorPicker.on('color:change', function (color) {
+            document.body.style.background = color.hexString;
+        });
 
-    Telegram.WebApp.MainButton
-        .setText('Choose Color')
-        .show();
+        Telegram.WebApp.ready();
 
-    Telegram.WebApp.onEvent('mainButtonClicked', sendDataToTelegram);
-
-    // Важно: убираем событие при закрытии или перезапуске приложения
-    window.addEventListener('unload', function() {
-        Telegram.WebApp.offEvent('mainButtonClicked', sendDataToTelegram);
-    });
-
-</script>
-<body style="background-color: #ffffff">
-    <div style="position: absolute; margin-top: 5vh; margin-left: 5vw; height: 90vh; width: 90vw; border-radius: 5vh; background-color: var(--tg-theme-bg-color); box-shadow: 0 0 2vw #000000;">
-        <div id="picker"
-             style="display: flex; justify-content: center; align-items: center; height: 100%; width: 100%"></div>
-    </div>
+        document.getElementById('donateButton').addEventListener('click', function () {
+            Telegram.WebApp.showPopup({
+                type: 'alert',
+                text: 'Thank you for considering a donation! Unfortunately, direct donations via Telegram Stars are not supported yet.',
+                buttons: [
+                    {
+                        id: 'ok',
+                        text: 'OK'
+                    }
+                ]
+            });
+        });
+    </script>
 </body>
-<script type="text/javascript">
-    Telegram.WebApp.expand();
-</script>
 </html>
