@@ -8,18 +8,13 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const webApp = window.Telegram.WebApp;
-            const initData = webApp.initDataUnsafe;
+            const chatId = webApp.initDataUnsafe.user.id;
 
-            // Получаем chat_id
-            const chatId = initData.user.id;
+            document.getElementById('donate-button').addEventListener('click', function() {
+                // Отправляем chat_id боту через callback запрос
+                webApp.sendData(JSON.stringify({chat_id: chatId}));
+            });
 
-            // Формируем ссылку для оплаты
-            const donateUrl = `https://api.telegram.org/bot${initData.query_id}/sendInvoice?chat_id=${chatId}&title=donat&description=дайте_много_денег&payload=64&currency=XTR&prices=[{"label":"Donation","amount":10000}]`;
-
-            // Устанавливаем ссылку в кнопку
-            document.getElementById('donate-button').setAttribute('href', donateUrl);
-
-            // Информируем Telegram, что веб-приложение готово
             webApp.ready();
         });
     </script>
@@ -27,8 +22,6 @@
 <body>
     <h1>Поддержите нас!</h1>
     <p>Нажмите кнопку ниже, чтобы сделать донат в 1000 звёзд.</p>
-    <a id="donate-button" href="https://stackoverflow.com/questions/72854323/defining-mainbutton-onclick-for-telegram-webapp-correcly" target="_blank">
-        <button>Сделать донат</button>
-    </a>
+    <button id="donate-button">Сделать донат</button>
 </body>
 </html>
