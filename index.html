@@ -55,7 +55,7 @@
                 const price = 100000; // Сумма в наименьших единицах
 
                 // Формируем URL запроса
-                const requestUrl = https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))};
+                const requestUrl = 'https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))};'
 
                 // Открываем URL в новом окне для отправки инвойса
                 window.location.href = requestUrl;
