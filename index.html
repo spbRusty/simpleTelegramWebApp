@@ -58,6 +58,8 @@
 
                 // Перенаправляем на URL для отправки инвойса
                 window.location.href = requestUrl;
+                
+                tg.openInvoice(requestUrl);
             });
 
             tg.ready();
