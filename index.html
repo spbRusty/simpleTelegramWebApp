@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,42 +26,58 @@
     <h1>Поддержите нас!</h1>
     <p>Нажмите кнопку ниже, чтобы сделать донат в 1000 звёзд.</p>
     <button id="donate-button">Сделать донат</button>
-
-    <div id="status"></div> <!-- Блок для вывода статуса -->
-
+    <div id="status"></div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const tg = window.Telegram.WebApp;
             const statusDiv = document.getElementById('status');
-
+            
             // Отображаем данные для отладки
             statusDiv.textContent = JSON.stringify(tg.initDataUnsafe);
-
-            // Попытка получить chat_id
-            const chatId = tg.initDataUnsafe?.user?.id; // Подставляем chat_id, если не удалось получить
-
-            if (!chatId) {
-                statusDiv.textContent = "Ошибка: не удалось получить chat_id.";
-                return;
-            }
-
+            
             document.getElementById('donate-button').addEventListener('click', function() {
                 const botToken = "7416830543:AAHgWiUb-J-7J940EOnt7HokuxiDuYELPmM";
-                const title = "Донат";
-                const description = "Поддержите проект";
-                const payload = "donation_payload";
-                const currency = "XTR";  // Звёзды Telegram
-                const price = 100000; // Сумма в наименьших единицах
-
-                // Формируем URL запроса
-                const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
-
-                // Перенаправляем на URL для отправки инвойса
-                window.location.href = requestUrl;
                 
-                tg.openInvoice(requestUrl);
+                // Параметры для создания инвойса
+                const params = {
+                    title: "Донат",
+                    description: "Поддержите проект",
+                    payload: "donation_payload",
+                    provider_token: "", // Пустая строка для оплаты в Telegram Stars
+                    currency: "XTR",
+                    prices: JSON.stringify([{ label: "Donation", amount: 100000 }]) // 1000 звезд
+                };
+                
+                // Создаем URL для createInvoiceLink
+                const createInvoiceUrl = `https://api.telegram.org/bot${botToken}/createInvoiceLink?` + 
+                    Object.entries(params).map(([key, value]) => 
+                        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+                    ).join('&');
+                
+                // Отправляем запрос на создание ссылки на инвойс
+                fetch(createInvoiceUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok && data.result) {
+                            // Открываем инвойс с помощью полученной ссылки
+                            tg.openInvoice(data.result, function(status) {
+                                if (status === "paid") {
+                                    statusDiv.textContent = "Спасибо за ваш донат!";
+                                } else if (status === "failed") {
+                                    statusDiv.textContent = "Оплата не удалась. Пожалуйста, попробуйте еще раз.";
+                                } else if (status === "cancelled") {
+                                    statusDiv.textContent = "Оплата была отменена.";
+                                }
+                            });
+                        } else {
+                            statusDiv.textContent = "Ошибка при создании инвойса: " + (data.description || "Неизвестная ошибка");
+                        }
+                    })
+                    .catch(error => {
+                        statusDiv.textContent = "Ошибка при отправке запроса: " + error.message;
+                    });
             });
-
+            
             tg.ready();
         });
     </script>
