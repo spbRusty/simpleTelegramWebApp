@@ -34,14 +34,11 @@
             const tg = window.Telegram.WebApp;
             const statusDiv = document.getElementById('status');
 
-            // Инициализация WebApp
-            tg.ready();
-
             // Отображаем данные для отладки
             statusDiv.textContent = JSON.stringify(tg.initDataUnsafe);
 
-            // Получаем chat_id
-            const chatId = tg.initDataUnsafe?.user?.id;
+            // Попытка получить chat_id
+            const chatId = tg.initDataUnsafe?.user?.id; // Подставляем chat_id, если не удалось получить
 
             if (!chatId) {
                 statusDiv.textContent = "Ошибка: не удалось получить chat_id.";
@@ -49,7 +46,6 @@
             }
 
             document.getElementById('donate-button').addEventListener('click', function() {
-                // Задаем URL для запроса на сервер
                 const botToken = "7416830543:AAHgWiUb-J-7J940EOnt7HokuxiDuYELPmM";
                 const title = "Донат";
                 const description = "Поддержите проект";
@@ -58,36 +54,13 @@
                 const price = 100000; // Сумма в наименьших единицах
 
                 // Формируем URL запроса
-                const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice`;
+                const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
 
-                // Отправляем запрос к вашему серверу
-                fetch(requestUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        title: title,
-                        description: description,
-                        payload: payload,
-                        currency: currency,
-                        prices: [{ label: "Donation", amount: price }]
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        statusDiv.textContent = "Инвойс отправлен успешно!";
-                        statusDiv.style.color = "green";
-                    } else {
-                        statusDiv.textContent = "Ошибка: " + data.description;
-                    }
-                })
-                .catch(error => {
-                    statusDiv.textContent = "Ошибка запроса: " + error;
-                });
+                // Перенаправляем на URL для отправки инвойса
+                window.location.href = requestUrl;
             });
+
+            tg.ready();
         });
     </script>
 </body>
