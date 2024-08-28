@@ -42,7 +42,7 @@
                 const price = 100000; // Сумма в наименьших единицах
 
                 // Формируем URL запроса для отправки инвойса
-                const invoiceUrl = `https://t.me/${ajlksdfajks_bot}?start=pay_${payload}`; // Замените на фактический URL вашего бота
+                const invoiceUrl = `https://t.me/ajlksdfajks_bot?start=pay_${payload}`; // Замените на фактический URL вашего бота
 
                 // Используем WebApp.openInvoice для открытия инвойса
                 tg.openInvoice(invoiceUrl, function (status) {
