@@ -41,11 +41,17 @@
                 const currency = "XTR";  // Звёзды Telegram
                 const price = 100000; // Сумма в наименьших единицах
 
-                // Формируем URL запроса
-                const requestUrl = `https://api.telegram.org/bot${botToken}/sendInvoice?chat_id=${chatId}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&payload=${payload}&currency=${currency}&prices=${encodeURIComponent(JSON.stringify([{ "label": "Donation", "amount": price }]))}`;
+                // Формируем URL запроса для отправки инвойса
+                const invoiceUrl = `https://t.me/${ajlksdfajks_bot}?start=pay_${payload}`; // Замените на фактический URL вашего бота
 
-                // Открываем URL в новом окне для отправки инвойса
-                window.location.href = requestUrl;
+                // Используем WebApp.openInvoice для открытия инвойса
+                tg.openInvoice(invoiceUrl, function (status) {
+                    if (status === 'paid') {
+                        alert('Спасибо за ваш донат!');
+                    } else {
+                        alert('Платеж не завершен.');
+                    }
+                });
             });
 
             tg.ready();
