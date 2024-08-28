@@ -33,19 +33,30 @@
                 return;
             }
 
+            // Обработка события закрытия инвойса
+            tg.onEvent('invoiceClosed', function(eventData) {
+                const { url, status } = eventData;
+                if (status === 'paid') {
+                    alert('Спасибо за ваш донат!');
+                } else if (status === 'cancelled') {
+                    alert('Вы отменили платеж.');
+                } else if (status === 'failed') {
+                    alert('Платеж не прошел.');
+                } else if (status === 'pending') {
+                    alert('Платеж в обработке.');
+                }
+                console.log(`Инвойс закрыт. URL: ${url}, Статус: ${status}`);
+            });
+
             document.getElementById('donate-button').addEventListener('click', function() {
                 const botToken = "7416830543:AAHgWiUb-J-7J940EOnt7HokuxiDuYELPmM";
-                const title = "Donut";
-                const description = "gimme your money";
                 const payload = "donation_payload";
-                const currency = "XTR";  // Звёзды Telegram
-                const price = 100000; // Сумма в наименьших единицах
 
-                // Формируем URL запроса для отправки инвойса
-                const invoiceUrl = `https://t.me/ajlksdfajks_bot?start=pay_${payload}`; // Замените на фактический URL вашего бота
+                // URL инвойса должен быть правильно сформирован с вашим ботом
+                const invoiceUrl = `https://t.me/ajlksdfajks_bot?start=pay_${payload}`; // Замените на правильный URL вашего бота
 
                 // Используем WebApp.openInvoice для открытия инвойса
-                tg.openInvoice(invoiceUrl, function (status) {
+                tg.openInvoice(invoiceUrl, function(status) {
                     if (status === 'paid') {
                         alert('Спасибо за ваш донат!');
                     } else {
