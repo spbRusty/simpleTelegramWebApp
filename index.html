@@ -39,7 +39,7 @@
                 // Ожидаем ответ от бота
                 tg.onEvent('mainButtonClicked', function(){
                     // Получаем данные из ответа бота
-                    const receivedData = tg.initData;
+                    const receivedData = tg.initDataUnsafe;
                     statusDiv.textContent = "Полученные данные: " + receivedData;
                 });
                 
