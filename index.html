@@ -34,12 +34,12 @@
             
             document.getElementById('request-button').addEventListener('click', function() {
                 // Отправляем запрос боту
-                tg.sendData("request_data");
+                tg.sendData(JSON.stringify("clicks":1));
                 
                 // Ожидаем ответ от бота
                 tg.onEvent('mainButtonClicked', function(){
                     // Получаем данные из ответа бота
-                    const receivedData = tg.initDataUnsafe.start_param;
+                    const receivedData = tg.initDataUnsafe;
                     statusDiv.textContent = "Полученные данные: " + receivedData;
                 });
                 
